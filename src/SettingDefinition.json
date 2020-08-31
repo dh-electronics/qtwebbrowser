@@ -1,0 +1,235 @@
+{
+    "settings": [
+        {
+            "name": "HttpUserAgent",
+            "default": "\"dhmi\"",
+            "file": true,
+            "type": "QString",
+            "group":"General"
+        },
+        {
+            "name": "HttpDiskCacheEnabled",
+            "default": "false",
+            "file": true,
+            "type": "bool",
+            "group":"General"
+        },
+        {
+            "name": "AutoLoadImages",
+            "default": "true",
+            "file": true,
+            "type": "bool",
+            "group":"General"
+        },
+        {
+            "name": "CertCheckEnabled",
+            "default": "true",
+            "file": true,
+            "type": "bool",
+            "group":"General"
+        },
+        {
+            "name": "TrustedDomains",
+            "default": "",
+            "file": true,
+            "type": "QString",
+            "group":"General"
+        },
+        {
+            "name": "KioskmodeEnabled",
+            "default": "true",
+            "file": true,
+            "type": "bool",
+            "group":"UI"
+        },
+        {
+            "name": "DebugEnabled",
+            "default": "false",
+            "file": true,
+            "type": "bool",
+            "group":"Debug"
+        },
+        {
+            "name": "RemoteDebuggingPort",
+            "default": "\"0.0.0.0:40004\"",
+            "file": true,
+            "type": "QString",
+            "group":"Debug"
+        },
+        {
+            "name": "JavaScriptDisabled",
+            "default": "false",
+            "file": true,
+            "type": "bool",
+            "group":"UI"
+        },
+        {
+            "name": "TouchtrackingEnabled",
+            "default": "true",
+            "file": true,
+            "type": "bool",
+            "group":"UI"
+        },
+        {
+            "name": "ViewRotation",
+            "default": "0",
+            "file": true,
+            "type": "int",
+            "group":"UI"
+        },
+        {
+            "name": "ScreensaverActivationTime",
+            "default": "0",
+            "file": true,
+            "type": "int",
+            "group":"UI"
+        },
+        {
+            "name": "MaxTabCount",
+            "default": "10",
+            "file": true,
+            "type": "int",
+            "group":"UI"
+        },
+        {
+            "name": "DefaultUrl",
+            "default": "\"http://dhmi\"",
+            "file": true,
+            "type": "QString",
+            "group":"General"
+        },
+        {
+            "name": "UiColor",
+            "default": "\"#46a2da\"",
+            "file": true,
+            "type": "QString",
+            "group":"Color"
+        },
+        {
+            "name": "uiSeparatorColor",
+            "default": "\"#7ebee5\"",
+            "file": true,
+            "type": "QString",
+            "group":"Color"
+        },
+        {
+            "name": "toolBarSeparatorColor",
+            "default": "\"#a3d1ed\"",
+            "file": true,
+            "type": "QString",
+            "group":"Color"
+        },
+        {
+            "name": "toolBarFillColor",
+            "default": "\"#7ebee5\"",
+            "file": true,
+            "type": "QString",
+            "group":"Color"
+        },
+        {
+            "name": "buttonPressedColor",
+            "default": "\"#3f91c4\"",
+            "file": true,
+            "type": "QString",
+            "group":"Color"
+        },
+        {
+            "name": "emptyBackgroundColor",
+            "default": "\"#e4e4e4\"",
+            "file": true,
+            "type": "QString",
+            "group":"Color"
+        },
+        {
+            "name": "uiHighlightColor",
+            "default": "\"#fddd5c\"",
+            "file": true,
+            "type": "QString",
+            "group":"Color"
+        },
+        {
+            "name": "inactivePagerColor",
+            "default": "\"#bcbdbe\"",
+            "file": true,
+            "type": "QString",
+            "group":"Color"
+        },
+        {
+            "name": "textFieldStrokeColor",
+            "default": "\"#3882ae\"",
+            "file": true,
+            "type": "QString",
+            "group":"Color"
+        },
+        {
+            "name": "placeholderColor",
+            "default": "\"#a0a1a2\"",
+            "file": true,
+            "type": "QString",
+            "group":"Color"
+        },
+        {
+            "name": "iconOverlayColor",
+            "default": "\"#0e202c\"",
+            "file": true,
+            "type": "QString",
+            "group":"Color"
+        },
+        {
+            "name": "iconStrokeColor",
+            "default": "\"#d6d6d6\"",
+            "file": true,
+            "type": "QString",
+            "group":"Color"
+        },
+        {
+            "name": "progressBarColor",
+            "default": "\"#E0006A\"",
+            "file": true,
+            "type": "QString",
+            "group":"Color"
+        },
+        {
+            "name": "defaultFontFamily",
+            "default": "\"Open Sans\"",
+            "file": true,
+            "type": "QString",
+            "group":"Color"
+        },
+        {
+            "name": "ProxyHostName",
+            "default": "",
+            "file": true,
+            "type": "QString",
+            "group":"Proxy"
+	},
+        {
+            "name": "ProxyUser",
+            "default": "",
+            "file": true,
+            "type": "QString",
+            "group":"Proxy"
+	},
+        {
+            "name": "ProxyPassword",
+            "default": "",
+            "file": true,
+            "type": "QString",
+            "group":"Proxy"
+	},
+        {
+            "name": "ProxyPort",
+            "default": "",
+            "file": true,
+            "type": "int",
+            "group":"Proxy"
+	},
+        {
+            "name": "ProxyType",
+            "default": "2",
+            "file": true,
+            "type": "int",
+            "group":"Proxy"
+	}
+    ]
+}
