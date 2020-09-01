@@ -39,7 +39,7 @@ TSLIB_CALIBFILE = /etc/pointercal
 TSLIB_CONFFILE = /etc/ts.conf  
 TSLIB_FBDEVICE = /dev/fb0  
 TSLIB_PLUGINDIR = /usr/lib/ts  
-TSLIB_TSDEVICE = /dev/input/
+TSLIB_TSDEVICE = /dev/input/event0
 ```
 
 The values for the Environment Variables may differ on other platforms.
