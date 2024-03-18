@@ -1,6 +1,6 @@
 /****************************************************************************
 ** 
-** Copyright (C) 2020  DH Electroncis GmbH
+** Copyright (C) 2024  DH Electroncis GmbH
 ** Contact: https://www.dh-electronics.com/
 **
 ****************************************************************************/
@@ -56,6 +56,7 @@ class GlobalSettings : public QObject
     Q_PROPERTY (int viewRotation READ viewRotation WRITE setViewRotation NOTIFY viewRotationChanged)
     Q_PROPERTY (int screensaverActivationTime READ screensaverActivationTime WRITE setScreensaverActivationTime NOTIFY screensaverActivationTimeChanged)
     Q_PROPERTY (int maxTabCount READ maxTabCount WRITE setMaxTabCount NOTIFY maxTabCountChanged)
+    Q_PROPERTY (bool contextMenuEnabled READ contextMenuEnabled WRITE setContextMenuEnabled NOTIFY contextMenuEnabledChanged)
     Q_PROPERTY (QString defaultUrl READ defaultUrl WRITE setDefaultUrl NOTIFY defaultUrlChanged)
     Q_PROPERTY (QString uiColor READ uiColor WRITE setUiColor NOTIFY uiColorChanged)
     Q_PROPERTY (QString uiSeparatorColor READ uiSeparatorColor WRITE setuiSeparatorColor NOTIFY uiSeparatorColorChanged)
@@ -95,6 +96,7 @@ public:
     void setViewRotation(int);
     void setScreensaverActivationTime(int);
     void setMaxTabCount(int);
+    void setContextMenuEnabled(bool);
     void setDefaultUrl(QString);
     void setUiColor(QString);
     void setuiSeparatorColor(QString);
@@ -129,6 +131,7 @@ public:
     int viewRotation() const { return m_viewRotation; }
     int screensaverActivationTime() const { return m_screensaverActivationTime; }
     int maxTabCount() const { return m_maxTabCount; }
+    bool contextMenuEnabled() const { return m_contextMenuEnabled; }
     QString defaultUrl() const { return m_defaultUrl; }
     QString uiColor() const { return m_uiColor; }
     QString uiSeparatorColor() const { return m_uiSeparatorColor; }
@@ -164,6 +167,7 @@ signals:
     void viewRotationChanged(int);
     void screensaverActivationTimeChanged(int);
     void maxTabCountChanged(int);
+    void contextMenuEnabledChanged(bool);
     void defaultUrlChanged(QString);
     void uiColorChanged(QString);
     void uiSeparatorColorChanged(QString);
@@ -191,7 +195,7 @@ private slots:
 private:
     void load();
 
-    Settings* m_settings;
+    Settings m_settings;
 
     QString m_httpUserAgent;
     bool m_httpDiskCacheEnabled;
@@ -206,6 +210,7 @@ private:
     int m_viewRotation;
     int m_screensaverActivationTime;
     int m_maxTabCount;
+    bool m_contextMenuEnabled;
     QString m_defaultUrl;
     QString m_uiColor;
     QString m_uiSeparatorColor;
@@ -230,4 +235,3 @@ private:
 };
 
 #endif // GLOBALSETTINGS_H
-

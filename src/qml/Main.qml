@@ -27,8 +27,8 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.5
-import WebBrowser 1.0
+import QtQuick
+import WebBrowser
 import Settings 1.0
 import NetworkProxy 1.0
 
@@ -37,11 +37,13 @@ Item {
     BrowserWindow{
         id: root
         anchors.fill: parent
-        Keyboard{
-            id: inputPanel
-            windowHeight: root.height
-            animationDuration: root.animationDuration
-        }
+    }
+
+    Keyboard{
+        id: inputPanel
+        parentRotation: root.rotation //this is a workaround, because in newer qt versions the parent rotation affect the virtual keyboard anymore
+        windowHeight: root.height
+        animationDuration: root.animationDuration
     }
 
     ScreenSaver {

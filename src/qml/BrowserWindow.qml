@@ -30,18 +30,15 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.5
-import QtWebEngine 1.5
-
-import QtQuick.Controls 1.0
-import QtQuick.Controls.Styles 1.0
-import QtQuick.Layouts 1.0
-import QtQuick.Controls.Private 1.0
-import QtQuick.Dialogs 1.2
+import QtQuick
+import QtWebEngine
+import QtQuick.Controls
+import QtQuick.Layouts
+import Qt.labs.platform
 import Settings 1.0
 
 import "assets"
-import WebBrowser 1.0
+import WebBrowser
 import "Utils.js" as Utils
 
 Item {
@@ -166,7 +163,7 @@ Item {
         z: 6
         title: qsTr("Leave Full Screen Mode")
         visible: opacity != 0.0
-        opacity: tabView.viewState == "fullscreen" ? 1.0 : 0.0
+        opacity: tabView.viewState === "fullscreen" ? 1.0 : 0.0
         anchors {
             left: parent.left
             right: parent.right
@@ -200,7 +197,17 @@ Item {
             right: parent.right
         }
 
-        height: if(!GlobalSettings.kioskmodeEnabled) {if(GlobalSettings.touchtrackingEnabled) {return inputPanel.y} else {return inputPanel.y - toolBarSize} } else { return inputPanel.y}
+        height: {
+            var pageviewheight = 0
+            if (inputPanel.state === "visible")
+            {
+                pageviewheight = (parent.height - inputPanel.height)
+            } else {
+                pageviewheight = parent.height
+            }
+
+            if(!GlobalSettings.kioskmodeEnabled) {if(GlobalSettings.touchtrackingEnabled) {return pageviewheight} else {return pageviewheight - toolBarSize} } else { return pageviewheight}
+        }
 
         Component.onCompleted: {
             var tab = createEmptyTab()
@@ -278,7 +285,7 @@ Item {
 
         SearchProxyModel {
             id: proxy
-            target: navigation.webView.navigationHistory.items
+            target: navigation.webView.history.items
             searchString: urlDropDown.searchString
             enabled: urlDropDown.state == "enabled"
         }

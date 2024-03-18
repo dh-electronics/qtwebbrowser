@@ -34,7 +34,7 @@ nodes = helper.getSettingsDef()
 ]]]*/
 //[[[end]]]
 
-GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
+GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent), m_settings(qApp->applicationDirPath()+"/config.ini")
   /*[[[cog
   initializationlist = ""
   for element in nodes:
@@ -43,11 +43,9 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
   ]]]*/
   //[[[end]]]
 {
-    m_settings = new Settings(qApp->applicationDirPath()+"/config.ini");
-
     load();
 
-    QObject::connect(m_settings, SIGNAL(fileChanged()), this, SLOT(settingsFileChanged()));
+    QObject::connect(&m_settings, SIGNAL(fileChanged()), this, SLOT(settingsFileChanged()));
 }
 
 void GlobalSettings::settingsFileChanged()
@@ -70,7 +68,7 @@ for element in nodes:
 
 void GlobalSettings::load()
 {
-    m_settings->loadSettings();
+    m_settings.loadSettings();
 
     /*[[[cog
     for element in nodes:
@@ -85,7 +83,7 @@ void GlobalSettings::load()
     		else:
     			cog.error("Unsupported type")
 
-    		cog.outl("set{0}(m_settings->getValue(\"{1}\",{2}".format(element["name"],element["group"]+"."+element["name"], conversion))
+    		cog.outl("set{0}(m_settings.getValue(\"{1}\",{2}".format(element["name"],element["group"]+"."+element["name"], conversion))
     ]]]*/
     //[[[end]]]
 }
@@ -96,11 +94,10 @@ void GlobalSettings::save()
     /*[[[cog
     for element in nodes:
     	if element["file"] == True:
-    		cog.outl("m_settings->setValue(\"{0}\",m_{1});".format( element["group"]+"."+element["name"],helper.first_lower(element["name"])))
+    		cog.outl("m_settings.setValue(\"{0}\",m_{1});".format( element["group"]+"."+element["name"],helper.first_lower(element["name"])))
     ]]]*/
     //[[[end]]]
 
-    m_settings->saveSettings();
+    m_settings.saveSettings();
 
 }
-

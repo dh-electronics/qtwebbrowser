@@ -30,11 +30,10 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.5
-import QtQuick.Layouts 1.0
-import QtQuick.Controls 2.2
-import QtQuick.Controls.Styles 1.4
-import Qt.labs.settings 1.0
+import QtQuick
+import QtQuick.Layouts
+import QtQuick.Controls
+import Qt.labs.settings
 import Settings 1.0
 
 Rectangle {

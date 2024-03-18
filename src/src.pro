@@ -39,9 +39,10 @@ OTHER_FILES = \
     qml/Window.qml \
     qml/ScreenSaver.qml \
     qml/LabeledSpinbox.qml \
-    qml/LabeledSwitch.qml
+    qml/LabeledSwitch.qml \
+    qml/Main.qml
 
-QT += qml quick webengine webenginewidgets
+QT += qml quick webenginequick webenginewidgets
 
 RESOURCES += resources.qrc
 DEFINES += TOUCH_MOCKING

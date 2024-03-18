@@ -27,27 +27,31 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.5
-import QtQuick.VirtualKeyboard 2.0
+import QtQuick
+import QtQuick.VirtualKeyboard
 
 InputPanel {
     id: inputPanel
     property int windowHeight: 0
     property int animationDuration: 0
+    property int parentRotation: 0
 
-    y: windowHeight
+    rotation: parentRotation
+    y: if(rotation == 180) {return -inputPanel.height } else { return windowHeight }
     anchors {
         left: parent.left
         right: parent.right
     }
-    states: State {
+    states: [
+        State {
         name: "visible"
         when: Qt.inputMethod.visible
         PropertyChanges {
             target: inputPanel
-            y: windowHeight - inputPanel.height
+            y: if(rotation == 180) {return 0 } else { return windowHeight - inputPanel.height }
         }
     }
+    ]
     transitions: Transition {
         from: ""
         to: "visible"

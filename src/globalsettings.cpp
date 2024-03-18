@@ -1,6 +1,6 @@
 /****************************************************************************
 ** 
-** Copyright (C) 2020  DH Electroncis GmbH
+** Copyright (C) 2024  DH Electroncis GmbH
 ** Contact: https://www.dh-electronics.com/
 **
 ****************************************************************************/
@@ -24,14 +24,12 @@
 #include "globalsettings.h"
 
 
-GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
-  ,m_httpUserAgent("dhmi"),m_httpDiskCacheEnabled(false),m_autoLoadImages(true),m_certCheckEnabled(true),m_trustedDomains(),m_kioskmodeEnabled(true),m_debugEnabled(false),m_remoteDebuggingPort("0.0.0.0:40004"),m_javaScriptDisabled(false),m_touchtrackingEnabled(true),m_viewRotation(0),m_screensaverActivationTime(0),m_maxTabCount(10),m_defaultUrl("http://dhmi"),m_uiColor("#46a2da"),m_uiSeparatorColor("#7ebee5"),m_toolBarSeparatorColor("#a3d1ed"),m_toolBarFillColor("#7ebee5"),m_buttonPressedColor("#3f91c4"),m_emptyBackgroundColor("#e4e4e4"),m_uiHighlightColor("#fddd5c"),m_inactivePagerColor("#bcbdbe"),m_textFieldStrokeColor("#3882ae"),m_placeholderColor("#a0a1a2"),m_iconOverlayColor("#0e202c"),m_iconStrokeColor("#d6d6d6"),m_progressBarColor("#E0006A"),m_defaultFontFamily("Open Sans"),m_proxyHostName(),m_proxyUser(),m_proxyPassword(),m_proxyPort(),m_proxyType(2)
+GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent), m_settings(qApp->applicationDirPath()+"/config.ini")
+  ,m_httpUserAgent("dhmi"),m_httpDiskCacheEnabled(false),m_autoLoadImages(true),m_certCheckEnabled(true),m_trustedDomains(),m_kioskmodeEnabled(true),m_debugEnabled(false),m_remoteDebuggingPort("0.0.0.0:40004"),m_javaScriptDisabled(false),m_touchtrackingEnabled(false),m_viewRotation(0),m_screensaverActivationTime(0),m_maxTabCount(10),m_contextMenuEnabled(false),m_defaultUrl("http://dhmi"),m_uiColor("#46a2da"),m_uiSeparatorColor("#7ebee5"),m_toolBarSeparatorColor("#a3d1ed"),m_toolBarFillColor("#7ebee5"),m_buttonPressedColor("#3f91c4"),m_emptyBackgroundColor("#e4e4e4"),m_uiHighlightColor("#fddd5c"),m_inactivePagerColor("#bcbdbe"),m_textFieldStrokeColor("#3882ae"),m_placeholderColor("#a0a1a2"),m_iconOverlayColor("#0e202c"),m_iconStrokeColor("#d6d6d6"),m_progressBarColor("#E0006A"),m_defaultFontFamily("Open Sans"),m_proxyHostName(),m_proxyUser(),m_proxyPassword(),m_proxyPort(),m_proxyType(2)
 {
-    m_settings = new Settings(qApp->applicationDirPath()+"/config.ini");
-
     load();
 
-    QObject::connect(m_settings, SIGNAL(fileChanged()), this, SLOT(settingsFileChanged()));
+    QObject::connect(&m_settings, SIGNAL(fileChanged()), this, SLOT(settingsFileChanged()));
 }
 
 void GlobalSettings::settingsFileChanged()
@@ -141,6 +139,14 @@ void GlobalSettings::setMaxTabCount(int value)
     {
         m_maxTabCount = value;
         emit maxTabCountChanged(m_maxTabCount);
+    }
+}
+void GlobalSettings::setContextMenuEnabled(bool value)
+{
+    if(m_contextMenuEnabled!=value)
+    {
+        m_contextMenuEnabled = value;
+        emit contextMenuEnabledChanged(m_contextMenuEnabled);
     }
 }
 void GlobalSettings::setDefaultUrl(QString value)
@@ -306,81 +312,82 @@ void GlobalSettings::setProxyType(int value)
 
 void GlobalSettings::load()
 {
-    m_settings->loadSettings();
+    m_settings.loadSettings();
 
-    setHttpUserAgent(m_settings->getValue("General.HttpUserAgent",m_httpUserAgent));
-    setHttpDiskCacheEnabled(m_settings->getValue("General.HttpDiskCacheEnabled",m_httpDiskCacheEnabled?"true":"false") == "true");
-    setAutoLoadImages(m_settings->getValue("General.AutoLoadImages",m_autoLoadImages?"true":"false") == "true");
-    setCertCheckEnabled(m_settings->getValue("General.CertCheckEnabled",m_certCheckEnabled?"true":"false") == "true");
-    setTrustedDomains(m_settings->getValue("General.TrustedDomains",m_trustedDomains));
-    setKioskmodeEnabled(m_settings->getValue("UI.KioskmodeEnabled",m_kioskmodeEnabled?"true":"false") == "true");
-    setDebugEnabled(m_settings->getValue("Debug.DebugEnabled",m_debugEnabled?"true":"false") == "true");
-    setRemoteDebuggingPort(m_settings->getValue("Debug.RemoteDebuggingPort",m_remoteDebuggingPort));
-    setJavaScriptDisabled(m_settings->getValue("UI.JavaScriptDisabled",m_javaScriptDisabled?"true":"false") == "true");
-    setTouchtrackingEnabled(m_settings->getValue("UI.TouchtrackingEnabled",m_touchtrackingEnabled?"true":"false") == "true");
-    setViewRotation(m_settings->getValue("UI.ViewRotation",QString::number(m_viewRotation)).toInt());
-    setScreensaverActivationTime(m_settings->getValue("UI.ScreensaverActivationTime",QString::number(m_screensaverActivationTime)).toInt());
-    setMaxTabCount(m_settings->getValue("UI.MaxTabCount",QString::number(m_maxTabCount)).toInt());
-    setDefaultUrl(m_settings->getValue("General.DefaultUrl",m_defaultUrl));
-    setUiColor(m_settings->getValue("Color.UiColor",m_uiColor));
-    setuiSeparatorColor(m_settings->getValue("Color.uiSeparatorColor",m_uiSeparatorColor));
-    settoolBarSeparatorColor(m_settings->getValue("Color.toolBarSeparatorColor",m_toolBarSeparatorColor));
-    settoolBarFillColor(m_settings->getValue("Color.toolBarFillColor",m_toolBarFillColor));
-    setbuttonPressedColor(m_settings->getValue("Color.buttonPressedColor",m_buttonPressedColor));
-    setemptyBackgroundColor(m_settings->getValue("Color.emptyBackgroundColor",m_emptyBackgroundColor));
-    setuiHighlightColor(m_settings->getValue("Color.uiHighlightColor",m_uiHighlightColor));
-    setinactivePagerColor(m_settings->getValue("Color.inactivePagerColor",m_inactivePagerColor));
-    settextFieldStrokeColor(m_settings->getValue("Color.textFieldStrokeColor",m_textFieldStrokeColor));
-    setplaceholderColor(m_settings->getValue("Color.placeholderColor",m_placeholderColor));
-    seticonOverlayColor(m_settings->getValue("Color.iconOverlayColor",m_iconOverlayColor));
-    seticonStrokeColor(m_settings->getValue("Color.iconStrokeColor",m_iconStrokeColor));
-    setprogressBarColor(m_settings->getValue("Color.progressBarColor",m_progressBarColor));
-    setdefaultFontFamily(m_settings->getValue("Color.defaultFontFamily",m_defaultFontFamily));
-    setProxyHostName(m_settings->getValue("Proxy.ProxyHostName",m_proxyHostName));
-    setProxyUser(m_settings->getValue("Proxy.ProxyUser",m_proxyUser));
-    setProxyPassword(m_settings->getValue("Proxy.ProxyPassword",m_proxyPassword));
-    setProxyPort(m_settings->getValue("Proxy.ProxyPort",QString::number(m_proxyPort)).toInt());
-    setProxyType(m_settings->getValue("Proxy.ProxyType",QString::number(m_proxyType)).toInt());
+    setHttpUserAgent(m_settings.getValue("General.HttpUserAgent",m_httpUserAgent));
+    setHttpDiskCacheEnabled(m_settings.getValue("General.HttpDiskCacheEnabled",m_httpDiskCacheEnabled?"true":"false") == "true");
+    setAutoLoadImages(m_settings.getValue("General.AutoLoadImages",m_autoLoadImages?"true":"false") == "true");
+    setCertCheckEnabled(m_settings.getValue("General.CertCheckEnabled",m_certCheckEnabled?"true":"false") == "true");
+    setTrustedDomains(m_settings.getValue("General.TrustedDomains",m_trustedDomains));
+    setKioskmodeEnabled(m_settings.getValue("UI.KioskmodeEnabled",m_kioskmodeEnabled?"true":"false") == "true");
+    setDebugEnabled(m_settings.getValue("Debug.DebugEnabled",m_debugEnabled?"true":"false") == "true");
+    setRemoteDebuggingPort(m_settings.getValue("Debug.RemoteDebuggingPort",m_remoteDebuggingPort));
+    setJavaScriptDisabled(m_settings.getValue("UI.JavaScriptDisabled",m_javaScriptDisabled?"true":"false") == "true");
+    setTouchtrackingEnabled(m_settings.getValue("UI.TouchtrackingEnabled",m_touchtrackingEnabled?"true":"false") == "true");
+    setViewRotation(m_settings.getValue("UI.ViewRotation",QString::number(m_viewRotation)).toInt());
+    setScreensaverActivationTime(m_settings.getValue("UI.ScreensaverActivationTime",QString::number(m_screensaverActivationTime)).toInt());
+    setMaxTabCount(m_settings.getValue("UI.MaxTabCount",QString::number(m_maxTabCount)).toInt());
+    setContextMenuEnabled(m_settings.getValue("UI.ContextMenuEnabled",m_contextMenuEnabled?"true":"false") == "true");
+    setDefaultUrl(m_settings.getValue("General.DefaultUrl",m_defaultUrl));
+    setUiColor(m_settings.getValue("Color.UiColor",m_uiColor));
+    setuiSeparatorColor(m_settings.getValue("Color.uiSeparatorColor",m_uiSeparatorColor));
+    settoolBarSeparatorColor(m_settings.getValue("Color.toolBarSeparatorColor",m_toolBarSeparatorColor));
+    settoolBarFillColor(m_settings.getValue("Color.toolBarFillColor",m_toolBarFillColor));
+    setbuttonPressedColor(m_settings.getValue("Color.buttonPressedColor",m_buttonPressedColor));
+    setemptyBackgroundColor(m_settings.getValue("Color.emptyBackgroundColor",m_emptyBackgroundColor));
+    setuiHighlightColor(m_settings.getValue("Color.uiHighlightColor",m_uiHighlightColor));
+    setinactivePagerColor(m_settings.getValue("Color.inactivePagerColor",m_inactivePagerColor));
+    settextFieldStrokeColor(m_settings.getValue("Color.textFieldStrokeColor",m_textFieldStrokeColor));
+    setplaceholderColor(m_settings.getValue("Color.placeholderColor",m_placeholderColor));
+    seticonOverlayColor(m_settings.getValue("Color.iconOverlayColor",m_iconOverlayColor));
+    seticonStrokeColor(m_settings.getValue("Color.iconStrokeColor",m_iconStrokeColor));
+    setprogressBarColor(m_settings.getValue("Color.progressBarColor",m_progressBarColor));
+    setdefaultFontFamily(m_settings.getValue("Color.defaultFontFamily",m_defaultFontFamily));
+    setProxyHostName(m_settings.getValue("Proxy.ProxyHostName",m_proxyHostName));
+    setProxyUser(m_settings.getValue("Proxy.ProxyUser",m_proxyUser));
+    setProxyPassword(m_settings.getValue("Proxy.ProxyPassword",m_proxyPassword));
+    setProxyPort(m_settings.getValue("Proxy.ProxyPort",QString::number(m_proxyPort)).toInt());
+    setProxyType(m_settings.getValue("Proxy.ProxyType",QString::number(m_proxyType)).toInt());
 }
 
 
 void GlobalSettings::save()
 {
-    m_settings->setValue("General.HttpUserAgent",m_httpUserAgent);
-    m_settings->setValue("General.HttpDiskCacheEnabled",m_httpDiskCacheEnabled);
-    m_settings->setValue("General.AutoLoadImages",m_autoLoadImages);
-    m_settings->setValue("General.CertCheckEnabled",m_certCheckEnabled);
-    m_settings->setValue("General.TrustedDomains",m_trustedDomains);
-    m_settings->setValue("UI.KioskmodeEnabled",m_kioskmodeEnabled);
-    m_settings->setValue("Debug.DebugEnabled",m_debugEnabled);
-    m_settings->setValue("Debug.RemoteDebuggingPort",m_remoteDebuggingPort);
-    m_settings->setValue("UI.JavaScriptDisabled",m_javaScriptDisabled);
-    m_settings->setValue("UI.TouchtrackingEnabled",m_touchtrackingEnabled);
-    m_settings->setValue("UI.ViewRotation",m_viewRotation);
-    m_settings->setValue("UI.ScreensaverActivationTime",m_screensaverActivationTime);
-    m_settings->setValue("UI.MaxTabCount",m_maxTabCount);
-    m_settings->setValue("General.DefaultUrl",m_defaultUrl);
-    m_settings->setValue("Color.UiColor",m_uiColor);
-    m_settings->setValue("Color.uiSeparatorColor",m_uiSeparatorColor);
-    m_settings->setValue("Color.toolBarSeparatorColor",m_toolBarSeparatorColor);
-    m_settings->setValue("Color.toolBarFillColor",m_toolBarFillColor);
-    m_settings->setValue("Color.buttonPressedColor",m_buttonPressedColor);
-    m_settings->setValue("Color.emptyBackgroundColor",m_emptyBackgroundColor);
-    m_settings->setValue("Color.uiHighlightColor",m_uiHighlightColor);
-    m_settings->setValue("Color.inactivePagerColor",m_inactivePagerColor);
-    m_settings->setValue("Color.textFieldStrokeColor",m_textFieldStrokeColor);
-    m_settings->setValue("Color.placeholderColor",m_placeholderColor);
-    m_settings->setValue("Color.iconOverlayColor",m_iconOverlayColor);
-    m_settings->setValue("Color.iconStrokeColor",m_iconStrokeColor);
-    m_settings->setValue("Color.progressBarColor",m_progressBarColor);
-    m_settings->setValue("Color.defaultFontFamily",m_defaultFontFamily);
-    m_settings->setValue("Proxy.ProxyHostName",m_proxyHostName);
-    m_settings->setValue("Proxy.ProxyUser",m_proxyUser);
-    m_settings->setValue("Proxy.ProxyPassword",m_proxyPassword);
-    m_settings->setValue("Proxy.ProxyPort",m_proxyPort);
-    m_settings->setValue("Proxy.ProxyType",m_proxyType);
+    m_settings.setValue("General.HttpUserAgent",m_httpUserAgent);
+    m_settings.setValue("General.HttpDiskCacheEnabled",m_httpDiskCacheEnabled);
+    m_settings.setValue("General.AutoLoadImages",m_autoLoadImages);
+    m_settings.setValue("General.CertCheckEnabled",m_certCheckEnabled);
+    m_settings.setValue("General.TrustedDomains",m_trustedDomains);
+    m_settings.setValue("UI.KioskmodeEnabled",m_kioskmodeEnabled);
+    m_settings.setValue("Debug.DebugEnabled",m_debugEnabled);
+    m_settings.setValue("Debug.RemoteDebuggingPort",m_remoteDebuggingPort);
+    m_settings.setValue("UI.JavaScriptDisabled",m_javaScriptDisabled);
+    m_settings.setValue("UI.TouchtrackingEnabled",m_touchtrackingEnabled);
+    m_settings.setValue("UI.ViewRotation",m_viewRotation);
+    m_settings.setValue("UI.ScreensaverActivationTime",m_screensaverActivationTime);
+    m_settings.setValue("UI.MaxTabCount",m_maxTabCount);
+    m_settings.setValue("UI.ContextMenuEnabled",m_contextMenuEnabled);
+    m_settings.setValue("General.DefaultUrl",m_defaultUrl);
+    m_settings.setValue("Color.UiColor",m_uiColor);
+    m_settings.setValue("Color.uiSeparatorColor",m_uiSeparatorColor);
+    m_settings.setValue("Color.toolBarSeparatorColor",m_toolBarSeparatorColor);
+    m_settings.setValue("Color.toolBarFillColor",m_toolBarFillColor);
+    m_settings.setValue("Color.buttonPressedColor",m_buttonPressedColor);
+    m_settings.setValue("Color.emptyBackgroundColor",m_emptyBackgroundColor);
+    m_settings.setValue("Color.uiHighlightColor",m_uiHighlightColor);
+    m_settings.setValue("Color.inactivePagerColor",m_inactivePagerColor);
+    m_settings.setValue("Color.textFieldStrokeColor",m_textFieldStrokeColor);
+    m_settings.setValue("Color.placeholderColor",m_placeholderColor);
+    m_settings.setValue("Color.iconOverlayColor",m_iconOverlayColor);
+    m_settings.setValue("Color.iconStrokeColor",m_iconStrokeColor);
+    m_settings.setValue("Color.progressBarColor",m_progressBarColor);
+    m_settings.setValue("Color.defaultFontFamily",m_defaultFontFamily);
+    m_settings.setValue("Proxy.ProxyHostName",m_proxyHostName);
+    m_settings.setValue("Proxy.ProxyUser",m_proxyUser);
+    m_settings.setValue("Proxy.ProxyPassword",m_proxyPassword);
+    m_settings.setValue("Proxy.ProxyPort",m_proxyPort);
+    m_settings.setValue("Proxy.ProxyType",m_proxyType);
 
-    m_settings->saveSettings();
+    m_settings.saveSettings();
 
 }
-

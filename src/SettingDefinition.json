@@ -65,7 +65,7 @@
         },
         {
             "name": "TouchtrackingEnabled",
-            "default": "true",
+            "default": "false",
             "file": true,
             "type": "bool",
             "group":"UI"
@@ -89,6 +89,13 @@
             "default": "10",
             "file": true,
             "type": "int",
+            "group":"UI"
+        },
+        {
+            "name": "ContextMenuEnabled",
+            "default": "false",
+            "file": true,
+            "type": "bool",
             "group":"UI"
         },
         {

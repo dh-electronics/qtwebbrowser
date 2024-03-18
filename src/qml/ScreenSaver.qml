@@ -1,5 +1,5 @@
-import QtQuick 2.7
-import QtQuick.Window 2.2
+import QtQuick
+
 import Display 1.0
 import EventSpy 1.0
 import Settings 1.0
@@ -74,8 +74,7 @@ Rectangle {
     // Resets the screensaver even when the screensaver is not in action
     Connections {
         target: TouchEventSpy
-        onTouchEventDetected:
-        {
+        function onTouchEventDetected() {
             if(screenSaver.enabled)
                 screenSaverTimer.restart();
         }

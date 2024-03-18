@@ -19,7 +19,7 @@ For the screen saver functionality the Web Browser needs access to the file /sys
 
 ## Runtime Dependencies
 The qt WebBrowser only depends on the QT Framework Version.  
-The Webbrowser was tested with a QT Version >= 5.9.1 .
+The Webbrowser was tested with a QT Version 6.6.2 .
 
 ## Development Dependencies
 Besides the Qt Build Environment the project needs python3 with the module cogapp for some automatic codegeneration.
@@ -32,14 +32,10 @@ If you want to build the project for desktop system you have to remove the DEFIN
 The following environment variables needs to be set on DHMI systems:
 
 ```console
-QT_QPA_EGLFS_DISABLE_INPUT=1  
-QT_QPA_EGLFS_TSLIB=1  
-QT_QPA_GENERIC_PLUGINS = tslib  
-TSLIB_CALIBFILE = /etc/pointercal  
-TSLIB_CONFFILE = /etc/ts.conf  
-TSLIB_FBDEVICE = /dev/fb0  
-TSLIB_PLUGINDIR = /usr/lib/ts  
-TSLIB_TSDEVICE = /dev/input/event0
+ETNA_MESA_DEBUG=nir
+QT_QPA_PLATFORM=eglfs
+QT_QPA_EGLFS_ALWAYS_SET_MODE=1
+QT_QPA_EGLFS_KMS_CONFIG=/etc/default/qt6-eglfs-kms.json
 ```
 
 The values for the Environment Variables may differ on other platforms.
@@ -48,4 +44,3 @@ The webbrowser can then be started from the application folder:
 ```console
 ./qtwebbrowser
 ```
-

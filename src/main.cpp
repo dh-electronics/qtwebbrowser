@@ -46,7 +46,7 @@
 #include <QQmlContext>
 #include <QQmlEngine>
 #include <QQuickView>
-#include <QtWebEngine/qtwebengineglobal.h>
+#include <QtWebEngineQuick>
 #include <QTimer>
 #include <systemd/sd-daemon.h>
 
@@ -91,11 +91,21 @@ int main(int argc, char **argv)
 
     int qAppArgCount = qargv.size();
 
+    QtWebEngineQuick::initialize();
+
 #if defined(TOUCH_MOCKING)
     TouchMockingApplication app(qAppArgCount, qargv.data());
 #else
     QGuiApplication app(qAppArgCount, qargv.data());
 #endif
+
+    {
+        GlobalSettings settings;
+        if(settings.debugEnabled()) {
+            qDebug() << "Enabled remote debugging on port " << settings.remoteDebuggingPort();
+            qputenv("QTWEBENGINE_REMOTE_DEBUGGING", settings.remoteDebuggingPort().toUtf8());
+        }
+    }
 
     qmlRegisterType<NavigationHistoryProxyModel>("WebBrowser", 1, 0, "SearchProxyModel");
     qmlRegisterType<TouchTracker>("WebBrowser", 1, 0, "TouchTracker");
@@ -104,8 +114,6 @@ int main(int argc, char **argv)
     qmlRegisterSingletonType<TouchEventSpy>("EventSpy", 1, 0, "TouchEventSpy", TouchEventSpy::singletonProvider);
     qmlRegisterSingletonType<GlobalSettings>("Settings", 1, 0, "GlobalSettings", settings_factory);
     qmlRegisterType<NetworkProxy>("NetworkProxy", 1, 0, "NetworkProxy");
-
-    QtWebEngine::initialize();
 
     app.setOrganizationName("The Qt Company");
     app.setOrganizationDomain("qt.io");

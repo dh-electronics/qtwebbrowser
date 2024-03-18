@@ -5,7 +5,7 @@
 **
 ****************************************************************************/
 #include "brightnesscontrol.h"
-const QString path = "/sys/class/backlight/display/";
+const QString path = "/sys/class/backlight/display-bl/";
 
 BrightnessControl::BrightnessControl( QObject *parent) : QObject(parent)
 {
@@ -39,7 +39,7 @@ bool BrightnessControl::setBrightness(int value)
             QString brightness = QString::number(value);
             brightness += "\n";
 
-            if(brightnessFile.write(brightness.toLocal8Bit()) == QString(value).length())
+            if(brightnessFile.write(brightness.toLocal8Bit()) == QString::number(value).length())
             {
                 qWarning("Unable to set brightness!");
                 result = false;

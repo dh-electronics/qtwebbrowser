@@ -92,7 +92,7 @@ private slots:
 private:
     void load();
 
-    Settings* m_settings;
+    Settings m_settings;
 
     /*[[[cog
     for element in nodes:
@@ -104,4 +104,3 @@ private:
 };
 
 #endif // GLOBALSETTINGS_H
-

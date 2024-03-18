@@ -30,15 +30,13 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.5
-import QtWebEngine 1.1
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
-import QtQuick.Layouts 1.2
-import QtGraphicalEffects 1.0
+import QtQuick
+import QtWebEngine
+import QtQuick.Controls
+import QtQuick.Layouts
 import Settings 1.0
 
-import WebBrowser 1.0
+import WebBrowser
 import "assets"
 
 Rectangle {
@@ -84,7 +82,7 @@ Rectangle {
             property alias title: webEngineView.title
 
             property var image: QtObject {
-                property var snapshot: null
+                property var grabberUrl: null
                 property string url: "about:blank"
             }
 
@@ -129,13 +127,18 @@ Rectangle {
                 profile: GlobalSettings.httpDiskCacheEnabled ?  defaultProfile : otrProfile
                 enabled: root.interactive
 
+                //enable or disable context menu based on contextMenuEnabled settings
+                onContextMenuRequested: function(request) {
+                    request.accepted = !GlobalSettings.contextMenuEnabled
+                }
+
                 //prevent javascript logging to syslog, otherwise this would bloat the log
                 onJavaScriptConsoleMessage: {}
 
                 function takeSnapshot() {
                     if (webEngineView.url == "" || webEngineView.url == "about:blank") {
                         tabItem.image.url = "about:blank"
-                        tabItem.image.snapshot = null
+                        tabItem.image.grabberUrl = null
                         return
                     }
 
@@ -144,26 +147,24 @@ Rectangle {
 
                     tabItem.image.url = webEngineView.url
                     webEngineView.grabToImage(function(result) {
-                        tabItem.image.snapshot = result;
-                        console.log("takeSnapshot("+result.url+")")
+                        tabItem.image.grabberUrl = result.url;
                     });
                 }
 
                 settings.autoLoadImages: GlobalSettings.autoLoadImages
                 settings.javascriptEnabled: !GlobalSettings.javaScriptDisabled
 
-                // This should be enabled as we can switch to Qt 5.6 (i.e. import QtWebEngine 1.2)
-                // settings.pluginsEnabled: settingsView.pluginsEnabled
+                settings.pluginsEnabled: false
 
-                onCertificateError: {
-                    if (!acceptedCertificates.shouldAutoAccept(error)){
-                        //show error page
-                    } else{
-                        error.ignoreCertificateError()
-                    }
-                }
+                onCertificateError: error => {
+                                        if (!acceptedCertificates.shouldAutoAccept(error)){
+                                            //show error page
+                                        } else{
+                                            error.acceptCertificate()
+                                        }
+                                    }
 
-                onNewViewRequested: {
+                onNewWindowRequested: {
 
                     if(tabViewMaxTabs > 1 && tabView.count < tabViewMaxTabs && !GlobalSettings.kioskmodeEnabled)
                     {
@@ -211,26 +212,6 @@ Rectangle {
                         viewState = "page"
                     request.accept()
                 }
-            }
-
-            Desaturate {
-                id: desaturate
-                visible: desaturation != 0.0
-                anchors.fill: webEngineView
-                source: webEngineView
-                desaturation: root.interactive ? 0.0 : 1.0
-
-                Behavior on desaturation {
-                    NumberAnimation { duration: animationDuration }
-                }
-            }
-
-            FastBlur {
-                id: blur
-                visible: radius != 0.0
-                anchors.fill: desaturate
-                source: desaturate
-                radius: desaturate.desaturation * 25
             }
 
             TouchTracker {
@@ -316,19 +297,18 @@ Rectangle {
                         onAccepted: {
                             webEngineView.findText(text)
                         }
-                        style: TextFieldStyle {
-                            textColor: "black"
-                            font.family: defaultFontFamily
-                            font.pixelSize: 28
-                            selectionColor: uiHighlightColor
-                            selectedTextColor: "black"
-                            placeholderTextColor: placeholderColor
-                            background: Rectangle {
-                                implicitWidth: 514
-                                implicitHeight: toolBarSize / 2
-                                border.color: textFieldStrokeColor
-                                border.width: 1
-                            }
+
+                        color: "black"
+                        font.family: defaultFontFamily
+                        font.pixelSize: 28
+                        selectionColor: uiHighlightColor
+                        selectedTextColor: "black"
+                        placeholderTextColor: placeholderColor
+                        background: Rectangle {
+                            implicitWidth: 514
+                            implicitHeight: toolBarSize / 2
+                            border.color: textFieldStrokeColor
+                            border.width: 1
                         }
                     }
                     Rectangle {
@@ -343,7 +323,7 @@ Rectangle {
                     }
                     UIButton {
                         id: findBackwardButton
-                        iconSource: "assets/icons/Btn_Back.png"
+                        icon.source: "assets/icons/Btn_Back.png"
                         implicitHeight: parent.height
                         onClicked: webEngineView.findText(findTextField.text, WebEngineView.FindBackward)
                     }
@@ -354,7 +334,7 @@ Rectangle {
                     }
                     UIButton {
                         id: findForwardButton
-                        iconSource: "assets/icons/Btn_Forward.png"
+                        icon.source: "assets/icons/Btn_Forward.png"
                         implicitHeight: parent.height
                         onClicked: webEngineView.findText(findTextField.text)
                     }
@@ -365,7 +345,7 @@ Rectangle {
                     }
                     UIButton {
                         id: findCancelButton
-                        iconSource: "assets/icons/Btn_Clear.png"
+                        icon.source: "assets/icons/Btn_Clear.png"
                         implicitHeight: parent.height
                         onClicked: findBar.visible = false
                     }
@@ -400,7 +380,7 @@ Rectangle {
         var element = {"item": null }
         element.item = component.createObject(root, { "width": root.width, "height": root.height, "opacity": 0.0 })
 
-        if (element.item == null) {
+        if (element.item === null) {
             console.log("PageView::add(): Error creating object");
             return
         }
@@ -510,12 +490,12 @@ Rectangle {
             MouseArea {
                 enabled: pathView.interactive
                 anchors.fill: wrapper
-                onClicked: {
+                onClicked: mouse => {
                     mouse.accepted = true
                     if (index < 0)
                         return
 
-                    if (index == pathView.currentIndex) {
+                    if (index === pathView.currentIndex) {
                         if (root.viewState == "list")
                             root.viewState = "page"
                         return
@@ -537,15 +517,6 @@ Rectangle {
                 width: snapshot.width
                 height: snapshot.height
             }
-            GaussianBlur {
-                anchors.fill: shadow
-                source: shadow
-                radius: shadow.size
-                samples: shadow.size * 2
-                opacity: 0.3
-                transparentBorder: true
-                visible: wrapper.visibility == 1.0
-            }
 
             Rectangle {
                 id: snapshot
@@ -553,13 +524,13 @@ Rectangle {
 
                 Image {
                     source: {
-                        if (!item.image.snapshot)
+                        if (!item.image.grabberUrl)
                             return "assets/icons/about_blank.png"
-                        return item.image.snapshot.url
+                        return item.image.grabberUrl
                     }
                     anchors.fill: parent
                     Rectangle {
-                        enabled: index == pathView.currentIndex && !pathView.moving && !pathView.flicking && wrapper.visibility == 1.0
+                        enabled: index === pathView.currentIndex && !pathView.moving && !pathView.flicking && wrapper.visibility == 1.0
                         opacity: enabled ? 1.0 : 0.0
                         visible: wrapper.visibility == 1.0 && listModel.count > 1
                         width: image.sourceSize.width
@@ -638,7 +609,7 @@ Rectangle {
 
         focus: pathView.interactive
 
-        property real offset: 30
+        offset: 30
 
         property real margin: {
             if (count == 2)
