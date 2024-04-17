@@ -9,12 +9,11 @@ The original source code came from https://code.qt.io/cgit/qt-apps/qtwebbrowser.
 Some changes for the DHMI Touch Panel Computers from DH Electronics have been made:
   * Replaced the settings menue with an config file
   * added a screen saver
-  * optimization for tslib
   * added a kioskmode
   * added possibility to enable remote debugging for websites
   * support for systemd watchdog
 
-## Access Rights
+## File permissions
 For the screen saver functionality the Web Browser needs access to the file /sys/class/backlight/display/brightness.
 
 ## Runtime Dependencies
